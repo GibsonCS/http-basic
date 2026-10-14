@@ -1,12 +1,14 @@
 package com.example.httpBasic.entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -27,4 +29,7 @@ public class User {
 
     @Column(name = "created_at")
     private LocalDate createdAt;
+
+    @ManyToMany
+    private HashSet<Role> roles;
 }
