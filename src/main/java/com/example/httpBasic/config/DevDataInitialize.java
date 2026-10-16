@@ -30,7 +30,6 @@ public class DevDataInitialize implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-
         User user = new User();
         user.setEmail("gibson@example.com");
         user.setPassword(passwordEncoder.encode(password));
@@ -39,10 +38,23 @@ public class DevDataInitialize implements CommandLineRunner {
         Role role = new Role();
         role.setName("USER");
 
-        roleRepository.save(role);
-
         user.getRoles().add(role);
 
+        User admin = new User();
+        admin.setEmail("admin@example.com");
+        admin.setPassword(passwordEncoder.encode(password));
+        admin.setCreatedAt(LocalDate.now());
+
+        Role roleAdmin = new Role();
+        roleAdmin.setName("ADMIN");
+
+        admin.getRoles().add(roleAdmin);
+        admin.getRoles().add(role);
+        
+        roleRepository.save(role);
+        roleRepository.save(roleAdmin);
+
         userRepository.save(user);
+        userRepository.save(admin);
     }
 }

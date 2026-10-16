@@ -2,6 +2,7 @@ package com.example.httpBasic.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,10 +26,11 @@ public class SecurityConfig {
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers(HttpMethod.GET, "/api/user").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "/api/admin").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
         ;
-
         return http.build();
     }
 }
