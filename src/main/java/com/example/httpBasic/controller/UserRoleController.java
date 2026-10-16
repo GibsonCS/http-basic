@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class TestController {
+public class UserRoleController {
 
     @PostMapping("/user")
     public ResponseEntity<String> handleTest(Authentication authentication) {
