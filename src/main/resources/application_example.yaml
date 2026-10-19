@@ -2,7 +2,6 @@ spring:
   profiles:
     active:
       - dev
-      - prod
   application:
     name: http-basic
   datasource:
