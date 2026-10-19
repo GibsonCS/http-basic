@@ -36,22 +36,6 @@ public class DevDataInitialize implements CommandLineRunner {
         String ROLE_USER = "USER";
         String ROLE_ADMIN = "ADMIN";
 
-        if (userRepository.findByEmail(userName).isPresent()) {
-            throw new RuntimeException("usuário já existe");
-        }
-
-        if (userRepository.findByEmail(adminUserName).isPresent()) {
-            throw new RuntimeException("usuário admin já existe");
-        }
-
-        if (roleRepository.findByName(ROLE_USER).isPresent()) {
-            throw new RuntimeException("role user já existe");
-        }
-
-        if (roleRepository.findByName(ROLE_ADMIN).isPresent()) {
-            throw new RuntimeException("role admin já existe");
-        }
-
         User user = new User();
         user.setEmail(userName);
         user.setPassword(passwordEncoder.encode(password));
