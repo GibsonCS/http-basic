@@ -3,6 +3,7 @@ package com.example.httpBasic.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,7 +24,8 @@ class UserRoleControllerTest {
     String USERNAME = "gibson@example.com";
     String ADMIN_USERNAME = "admin@example.com";
 
-    String PASSWORD = "admin";
+    @Value("${app.security.password}")
+    String PASSWORD;
 
     @Autowired
     private MockMvc mockMvc;

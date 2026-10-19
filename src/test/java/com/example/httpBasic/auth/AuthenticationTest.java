@@ -2,6 +2,7 @@ package com.example.httpBasic.auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,13 +17,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("dev")
 public class AuthenticationTest {
 
+    @Value("${app.security.password}")
+    private String password;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void shouldAuthenticateWithValidCredentials() throws Exception {
         mockMvc.perform(get("/api/user")
-                        .with(httpBasic("gibson@example.com", "admin")))
+                        .with(httpBasic("gibson@example.com", password)))
                 .andExpect(status().isAccepted());
     }
 }
