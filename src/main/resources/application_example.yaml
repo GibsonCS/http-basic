@@ -1,7 +1,8 @@
 spring:
   profiles:
     active:
-      - dev,prod
+      - dev
+      - prod
   application:
     name: http-basic
   datasource:
