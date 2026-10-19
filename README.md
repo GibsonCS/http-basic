@@ -74,6 +74,7 @@ Se estiver usando Maven instalado, substitua `./mvnw` ou `.\mvnw.cmd` por `mvn`.
 
 A propriedade `APP_SECURITY_PASSWORD` é a forma por variável de ambiente da propriedade Spring `app.security.password`. A rotina de dados de demonstração só é executada quando o perfil `dev` está ativo.
 
+
 ## Testar a autenticação
 
 Com a aplicação em execução, uma requisição HTTP Basic pode ser feita com `curl`:
@@ -89,6 +90,8 @@ curl -i -u admin@example.com:SUA_SENHA http://localhost:8080/api/admin
 ```
 
 Substitua `SUA_SENHA` pelo valor configurado em `APP_SECURITY_PASSWORD`. Os resultados dependem das regras definidas na configuração de segurança e dos endpoints existentes na aplicação.
+
+obs: Há um arquivo "application_example.yaml" dentro de resources caso queira definir o perfil e as credenciais de forma manual pelo próprio arquivo, basta renomea-lo para application.yaml.
 
 ## Executar os testes
 
@@ -110,11 +113,56 @@ Ou, com Maven instalado:
 mvn test
 ```
 
-## Como funciona a inicialização dos dados
+## Inicialização de dados de desenvolvimento
 
-A classe `DevDataInitialize` implementa `CommandLineRunner` e é marcada com `@Profile("dev")`. Quando o perfil `dev` está ativo, ela cria usuários e roles de demonstração, codifica as senhas com o `PasswordEncoder` e persiste os dados usando os repositórios JPA.
+A classe `DevDataInitialize` é responsável por popular o banco de dados com dados iniciais para
+facilitar o desenvolvimento e os testes da aplicação.
 
-A rotina atual é voltada ao desenvolvimento. Antes de executá-la repetidamente, é necessário garantir que a inicialização seja idempotente para evitar registros duplicados ou conflitos de integridade.
+Ela implementa a interface `CommandLineRunner`, permitindo que a inicialização seja executada após o
+início do contexto da aplicação Spring.
+
+### Perfil de execução
+
+A classe é anotada com `@Profile("dev")`, portanto, só é ativada quando o perfil `dev` está
+habilitado.
+
+Essa restrição evita que os dados de demonstração sejam carregados automaticamente em outros
+ambientes, como produção.
+
+### Dados inicializados
+
+A classe cria dois usuários para demonstrar o controle de acesso baseado em roles:
+
+| E-mail               | Roles           |
+|----------------------|-----------------|
+| `gibson@example.com` | `USER`          |
+| `admin@example.com`  | `ADMIN`, `USER` |
+
+As senhas são obtidas por meio da propriedade `app.security.password` e codificadas com o
+`PasswordEncoder` antes de serem persistidas.
+
+Dessa forma, a senha não é armazenada diretamente em texto puro no banco de dados. O valor utilizado
+nos testes deve ser configurado no ambiente local e não deve conter credenciais reais.
+
+### Fluxo de execução
+
+1. O Spring inicializa o contexto da aplicação com o perfil `dev` ativo.
+2. A propriedade `app.security.password` é carregada.
+3. São criados os objetos `User` e `Role` e persistidos no banco h2.
+
+### Configuração
+
+A aplicação precisa receber a propriedade `app.security.password` para executar essa inicialização.
+
+Configure-a por variável de ambiente ou por um arquivo de configuração local não versionado. Não
+inclua senhas reais no repositório.
+
+### Observação
+
+Esta classe é destinada exclusivamente ao desenvolvimento e à demonstração da autenticação. A carga
+inicial deve ser idempotente; isto é, poder ser executada novamente sem criar registros duplicados
+ou provocar erros de integridade. Essa garantia depende da implementação da rotina de inicialização
+e das restrições de unicidade do banco de dados.
 
 ## Limitações e segurança
 
@@ -124,14 +172,5 @@ A rotina atual é voltada ao desenvolvimento. Antes de executá-la repetidamente
 - A carga de dados de desenvolvimento não deve ser ativada em produção.
 - Este projeto é didático e não pretende cobrir todos os requisitos de uma solução de autenticação pronta para produção.
 
-## Próximos passos
 
-- [ ] Adicionar testes de integração para credenciais válidas e inválidas.
-- [ ] Testar a autorização de `USER` e `ADMIN` em cada endpoint protegido.
-- [ ] Tornar a inicialização de dados segura para execuções repetidas.
-- [ ] Revisar logs para garantir que dados sensíveis não sejam expostos.
-- [ ] Ampliar a documentação conforme novas funcionalidades forem adicionadas.
-
----
-
-Projeto de estudo pessoal para praticar Java, Spring Boot e os fundamentos do Spring Security.
+Projeto de para prática pessoal.
