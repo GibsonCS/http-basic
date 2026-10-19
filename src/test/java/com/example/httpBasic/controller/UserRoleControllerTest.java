@@ -15,37 +15,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserRoleControllerTest {
 
+    String USER_ENDPOINT = "/api/user";
+    String ADMIN_ENDPOINT = "/api/admin";
+
+    String USERNAME = "gibson@example.com";
+    String ADMIN_USERNAME = "admin@example.com";
+
+    String PASSWORD = "admin";
+
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void shouldAllowUserDoRequestToUserEndpoint() throws Exception {
-        mockMvc.perform(get("/api/user")
-                        .with(httpBasic("gibson@example.com", "admin")))
+        mockMvc.perform(get(USER_ENDPOINT)
+                        .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status()
                         .isAccepted());
     }
 
     @Test
     void shouldDenyUserDoRequestToAdminEndpoint() throws Exception {
-        mockMvc.perform(get("/api/admin")
-                        .with(httpBasic("gibson@example.com", "admin")))
+        mockMvc.perform(get(ADMIN_ENDPOINT)
+                        .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status()
                         .isForbidden());
     }
 
     @Test
     void shouldAllowAdminDoRequestToAdminEndpoint() throws Exception {
-        mockMvc.perform(get("/api/admin")
-                        .with(httpBasic("admin@example.com", "admin")))
+        mockMvc.perform(get(ADMIN_ENDPOINT)
+                        .with(httpBasic(ADMIN_USERNAME, PASSWORD)))
                 .andExpect(status()
                         .isAccepted());
     }
 
     @Test
     void shouldAllowAdminDoRequestToUserEndpoint() throws Exception {
-        mockMvc.perform(get("/api/admin")
-                        .with(httpBasic("admin@example.com", "admin")))
+        mockMvc.perform(get(USER_ENDPOINT)
+                        .with(httpBasic(ADMIN_USERNAME, PASSWORD)))
                 .andExpect(status()
                         .isAccepted());
     }
