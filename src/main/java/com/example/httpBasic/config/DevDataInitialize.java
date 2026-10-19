@@ -30,27 +30,49 @@ public class DevDataInitialize implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        String userName = "gibson@example.com";
+        String adminUserName = "admin@example.com";
+
+        String ROLE_USER = "USER";
+        String ROLE_ADMIN = "ADMIN";
+
+        if (userRepository.findByEmail(userName).isPresent()) {
+            throw new RuntimeException("usuário já existe");
+        }
+
+        if (userRepository.findByEmail(adminUserName).isPresent()) {
+            throw new RuntimeException("usuário admin já existe");
+        }
+
+        if (roleRepository.findByName(ROLE_USER).isPresent()) {
+            throw new RuntimeException("role user já existe");
+        }
+
+        if (roleRepository.findByName(ROLE_ADMIN).isPresent()) {
+            throw new RuntimeException("role admin já existe");
+        }
+
         User user = new User();
-        user.setEmail("gibson@example.com");
+        user.setEmail(userName);
         user.setPassword(passwordEncoder.encode(password));
         user.setCreatedAt(LocalDate.now());
 
         Role role = new Role();
-        role.setName("USER");
+        role.setName(ROLE_USER);
 
         user.getRoles().add(role);
 
         User admin = new User();
-        admin.setEmail("admin@example.com");
+        admin.setEmail(adminUserName);
         admin.setPassword(passwordEncoder.encode(password));
         admin.setCreatedAt(LocalDate.now());
 
         Role roleAdmin = new Role();
-        roleAdmin.setName("ADMIN");
+        roleAdmin.setName(ROLE_ADMIN);
 
         admin.getRoles().add(roleAdmin);
         admin.getRoles().add(role);
-        
+
         roleRepository.save(role);
         roleRepository.save(roleAdmin);
 
