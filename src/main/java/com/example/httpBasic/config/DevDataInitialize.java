@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,34 +34,30 @@ public class DevDataInitialize implements CommandLineRunner {
         String userName = "gibson@example.com";
         String adminUserName = "admin@example.com";
 
-        String ROLE_USER = "USER";
-        String ROLE_ADMIN = "ADMIN";
+        Role ROLE_USER = findOrCreateRole("USER");
+        Role ROLE_ADMIN = findOrCreateRole("ADMIN");
 
-        User user = new User();
-        user.setEmail(userName);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setCreatedAt(LocalDate.now());
+        findOrCreateUser(userName, password, Set.of(ROLE_USER));
+        findOrCreateUser(adminUserName, password, Set.of(ROLE_ADMIN, ROLE_USER));
+    }
 
-        Role role = new Role();
-        role.setName(ROLE_USER);
+    private void findOrCreateUser(String email, String password, Set<Role> roles) {
+        userRepository.findByEmail(email).orElseGet(() -> {
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setRoles(roles);
+            user.setCreatedAt(LocalDate.now());
 
-        user.getRoles().add(role);
+            return userRepository.save(user);
+        });
+    }
 
-        User admin = new User();
-        admin.setEmail(adminUserName);
-        admin.setPassword(passwordEncoder.encode(password));
-        admin.setCreatedAt(LocalDate.now());
-
-        Role roleAdmin = new Role();
-        roleAdmin.setName(ROLE_ADMIN);
-
-        admin.getRoles().add(roleAdmin);
-        admin.getRoles().add(role);
-
-        roleRepository.save(role);
-        roleRepository.save(roleAdmin);
-
-        userRepository.save(user);
-        userRepository.save(admin);
+    private Role findOrCreateRole(String name) {
+        return roleRepository.findByName(name).orElseGet(() -> {
+            Role role = new Role();
+            role.setName(name);
+            return roleRepository.save(role);
+        });
     }
 }
