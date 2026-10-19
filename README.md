@@ -171,6 +171,3 @@ e das restrições de unicidade do banco de dados.
 - Os dados e senhas de demonstração destinam-se apenas ao ambiente local.
 - A carga de dados de desenvolvimento não deve ser ativada em produção.
 - Este projeto é didático e não pretende cobrir todos os requisitos de uma solução de autenticação pronta para produção.
-
-
-Projeto de para prática pessoal.
