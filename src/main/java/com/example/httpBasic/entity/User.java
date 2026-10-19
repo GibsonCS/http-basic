@@ -12,9 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 
 @Entity
 @Table(name = "tb_users")
@@ -29,7 +27,6 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    @Getter(AccessLevel.NONE)
     private String password;
 
     @Column(name = "created_at")
