@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class DevDataInitialize implements CommandLineRunner {
             User user = new User();
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(password));
-            user.setRoles(roles);
+            user.setRoles(new HashSet<>(roles));
             user.setCreatedAt(LocalDate.now());
 
             return userRepository.save(user);
